@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kuac-jok Hospital Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        /* ----- CSS Variables (Professional Healthcare Theme) ----- */
+        :root {
+            --primary: #0a7e8c;
+            --primary-dark: #065a66;
+            --primary-light: #e6f4f6;
+            --primary-gradient: linear-gradient(135deg, #0a7e8c 0%, #065a66 100%);
+            --bg: #f4f7fb;
+            --sidebar-bg: #ffffff;
+            --sidebar-hover: #f0f4f8;
+            --sidebar-text: #4a5568;
+            --sidebar-active: var(--primary);
+            --card-bg: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --success-bg: #f0fff4;
+            --danger: #e53e3e;
+            --danger-bg: #fff5f5;
+            --warning: #d69e2e;
+            --warning-bg: #fffff0;
+            --info: #3182ce;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: 0.2s ease;
+        }
+
+        /* ----- Reset & Base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ----- Scrollbar ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 8px;
+        }
+
+        /* ============================================================
+           AUTH SCREENS with Medical Background
+           ============================================================ */
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(10, 126, 140, 0.92) 0%, rgba(6, 90, 102, 0.95) 100%),
+                url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMjAgMnYybDItMi0yLTJ6bTAgNHYybDItMi0yLTJ6bTAgNHYybDItMi0yLTJ6bTAgNHYybDItMi0yLTJ6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+');
+            background-size: cover, 60px 60px;
+            position: relative;
+        }
+
+        .auth-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-container.hidden {
+            display: none;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .auth-header .logo svg {
+            flex-shrink: 0;
+        }
+
+        .auth-header .logo span {
+            color: var(--text-main);
+        }
+
+        .auth-header .tagline {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        /* ----- Forms ----- */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--text-main);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all var(--transition);
+            background: #fafbfc;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 126, 140, 0.12);
+            background: #ffffff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ----- Buttons ----- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 126, 140, 0.35);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #2f855a;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #b7791f;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 2px solid var(--border);
+        }
+        .btn-outline:hover {
+            background: var(--bg);
+            border-color: var(--text-muted);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-main);
+            margin-top: 0.5rem;
+        }
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* ============================================================
+           APP LAYOUT
+           ============================================================ */
+        #app-container {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* ----- Sidebar (White, Clean) ----- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            border-right: 1px solid var(--border);
+            transition: transform 0.3s ease;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .sidebar-brand {
+            padding: 1.25rem 1.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand .logo-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand .logo-text span {
+            color: var(--text-main);
+        }
+
+        .sidebar-brand .hospital-tag {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 1rem 0.75rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu .menu-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 0.875rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--sidebar-hover);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-menu a .icon {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 0.75rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ----- Main Area ----- */
+        .main-area {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--bg);
+        }
+
+        /* ----- Topbar ----- */
+        .topbar {
+            background: var(--card-bg);
+            padding: 0.7rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-left h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.3rem 1rem 0.3rem 0.75rem;
+            border-radius: 30px;
+            background: var(--primary-light);
+        }
+
+        .user-badge .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .user-badge .name {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .user-badge .role-tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.1rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* ----- Content ----- */
+        .content {
+            padding: 1.5rem 2rem 2rem;
+            flex: 1;
+        }
+
+        /* ----- Stats Grid ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 0.2rem;
+            color: var(--text-main);
+        }
+
+        .stat-card .sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .stat-card.green {
+            border-left-color: var(--success);
+        }
+        .stat-card.yellow {
+            border-left-color: var(--warning);
+        }
+        .stat-card.red {
+            border-left-color: var(--danger);
+        }
+        .stat-card.blue {
+            border-left-color: var(--info);
+        }
+
+        /* ----- Cards ----- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .card-header .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ----- Tables ----- */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th,
+        td {
+            padding: 0.7rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover td {
+            background: #fafbfc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        .status-badge.pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        .status-badge.rejected {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        .status-badge.scheduled {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .status-badge.completed {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        .status-badge.cancelled {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        .status-badge.partial {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        .status-badge.paid {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* ----- Toast ----- */
+        #toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .toast {
+            background: var(--text-main);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ----- Utilities ----- */
+        .flex {
+            display: flex;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gap-1 {
+            gap: 0.5rem;
+        }
+        .gap-2 {
+            gap: 1rem;
+        }
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+        .text-sm {
+            font-size: 0.8rem;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+
+        /* ----- Empty State ----- */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+        }
+        .empty-state .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ----- Responsive ----- */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-area {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 0.7rem 1rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .auth-container {
+                padding: 1.5rem;
+            }
+
+            .topbar-left h2 {
+                font-size: 0.9rem;
+            }
+
+            .hamburger {
+                display: flex !important;
+            }
+
+            .user-badge .name {
+                display: none;
+            }
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--text-main);
+            padding: 0.25rem;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 99;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo SVG sizing */
+        .logo-svg {
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== AUTH WRAPPER ===== -->
+    <div id="auth-wrapper" class="auth-wrapper">
+        <!-- Login -->
+        <div id="login-view" class="auth-container">
+            <div class="auth-header">
+                <div class="logo">
+                    <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="39" height="39" rx="11.5" fill="#0a7e8c" stroke="#0a7e8c"/>
+                        <path d="M12 20L17 15L22 20L27 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 25L17 20L22 25L27 20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="20" cy="20" r="2" fill="white"/>
+                    </svg>
+                    <div>
+                        <span>Kuac-jok</span> HMS
+                        <span class="hospital-tag" style="display:block;font-size:0.55rem;color:#718096;font-weight:500;letter-spacing:0.5px;margin-top:-2px;">Hospital Management System</span>
+                    </div>
+                </div>
+                <p class="tagline">Secure · Professional · Efficient</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter username" required autocomplete="username" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="switchAuthView('register-view')">Register New Staff</button>
+            </form>
+            <div style="margin-top: 1.5rem; font-size: 0.7rem; color: var(--text-muted); text-align: center; background: var(--bg); padding: 0.5rem; border-radius: 6px;">
+                <strong>Demo:</strong> admin / admin123 &bull; doctor / doctor123 &bull; reception / reception123
+            </div>
+        </div>
+
+        <!-- Register -->
+        <div id="register-view" class="auth-container hidden">
+            <div class="auth-header">
+                <div class="logo">
+                    <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="39" height="39" rx="11.5" fill="#0a7e8c" stroke="#0a7e8c"/>
+                        <path d="M12 20L17 15L22 20L27 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 25L17 20L22 25L27 20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="20" cy="20" r="2" fill="white"/>
+                    </svg>
+                    <div>
+                        <span>Kuac-jok</span> HMS
+                        <span class="hospital-tag" style="display:block;font-size:0.55rem;color:#718096;font-weight:500;letter-spacing:0.5px;margin-top:-2px;">Staff Registration</span>
+                    </div>
+                </div>
+                <p class="tagline">Pending Admin Approval</p>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-fullname" placeholder="e.g. Dr. Sarah Kim" required />
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" placeholder="Choose a username" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" placeholder="Create a password" required />
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="reg-role" required>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Receptionist">Receptionist</option>
+                        <option value="Nurse">Nurse</option>
+                        <option value="Lab Technician">Lab Technician</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Accountant">Accountant</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Registration</button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="switchAuthView('login-view')">Back to Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== APP CONTAINER ===== -->
+    <div id="app-container">
+        <div class="app-layout">
+            <!-- Sidebar Overlay (mobile) -->
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-brand">
+                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="39" height="39" rx="11.5" fill="#0a7e8c" stroke="#0a7e8c"/>
+                        <path d="M12 20L17 15L22 20L27 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 25L17 20L22 25L27 20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="20" cy="20" r="2" fill="white"/>
+                    </svg>
+                    <div>
+                        <div class="logo-text">Kuac-jok <span>HMS</span></div>
+                        <span class="hospital-tag">Healthcare Management</span>
+                    </div>
+                </div>
+                <nav class="sidebar-menu" id="sidebar-menu">
+                    <!-- Injected by JS -->
+                </nav>
+                <div class="sidebar-footer">© 2026 Kuac-jok HMS &bull; v3.0</div>
+            </aside>
+
+            <!-- Main -->
+            <main class="main-area">
+                <!-- Topbar -->
+                <header class="topbar">
+                    <div class="topbar-left">
+                        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+                        <h2 id="page-header">Dashboard</h2>
+                    </div>
+                    <div class="topbar-right">
+                        <div class="user-badge">
+                            <div class="avatar" id="user-avatar">A</div>
+                            <span class="name" id="current-user-name"></span>
+                            <span class="role-tag" id="current-user-role"></span>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </header>
+
+                <!-- Content -->
+                <section class="content" id="main-content">
+                    <!-- Injected by JS -->
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================================
+        //  DATABASE LAYER (localStorage simulation)
+        // =====================================================================
+        const DB = {
+            get(key) {
+                try { return JSON.parse(localStorage.getItem('hms_' + key)) || []; } catch { return []; }
+            },
+            set(key, data) {
+                localStorage.setItem('hms_' + key, JSON.stringify(data));
+            },
+            getUsers() { return this.get('users'); },
+            setUsers(u) { this.set('users', u); },
+            getPatients() { return this.get('patients'); },
+            setPatients(p) { this.set('patients', p); },
+            getAppointments() { return this.get('appointments'); },
+            setAppointments(a) { this.set('appointments', a); },
+            getMedications() { return this.get('medications'); },
+            setMedications(m) { this.set('medications', m); },
+            getLabTests() { return this.get('labtests'); },
+            setLabTests(l) { this.set('labtests', l); },
+            getBills() { return this.get('bills'); },
+            setBills(b) { this.set('bills', b); },
+        };
+
+        // ----- Seed initial data -----
+        function seedDatabase() {
+            if (DB.getUsers().length === 0) {
+                DB.setUsers([{
+                    id: 1,
+                    fullname: 'Super Admin',
+                    username: 'admin',
+                    password: 'admin123',
+                    role: 'Super Admin',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 2,
+                    fullname: 'Dr. James Mwangi',
+                    username: 'doctor',
+                    password: 'doctor123',
+                    role: 'Doctor',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 3,
+                    fullname: 'Jane Reception',
+                    username: 'reception',
+                    password: 'reception123',
+                    role: 'Receptionist',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 4,
+                    fullname: 'Nurse Anna',
+                    username: 'nurse',
+                    password: 'nurse123',
+                    role: 'Nurse',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 5,
+                    fullname: 'Lab Tech Peter',
+                    username: 'labtech',
+                    password: 'labtech123',
+                    role: 'Lab Technician',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 6,
+                    fullname: 'Pharm Grace',
+                    username: 'pharmacist',
+                    password: 'pharmacist123',
+                    role: 'Pharmacist',
+                    status: 'Active',
+                    photo: ''
+                }, {
+                    id: 7,
+                    fullname: 'Accountant Paul',
+                    username: 'accountant',
+                    password: 'accountant123',
+                    role: 'Accountant',
+                    status: 'Active',
+                    photo: ''
+                }]);
+
+                DB.setPatients([
+                    { id: 'P001', name: 'John Doe', age: 45, gender: 'Male', phone: '0712345678', email: 'john@example.com',
+                        address: 'Nairobi', bloodGroup: 'A+', allergies: 'None', chronic: 'Hypertension',
+                        insurance: 'NHIF', emergency: '0712345679', nextOfKin: 'Mary Doe', history: 'Hypertension since 2020',
+                        status: 'Active' },
+                    { id: 'P002', name: 'Sarah Wanjiru', age: 29, gender: 'Female', phone: '0723456789',
+                        email: 'sarah@example.com', address: 'Kiambu', bloodGroup: 'O-', allergies: 'Penicillin',
+                        chronic: 'None', insurance: 'AAR', emergency: '0723456790', nextOfKin: 'David Wanjiru',
+                        history: 'Routine checkup', status: 'Active' },
+                    { id: 'P003', name: 'Michael Ochieng', age: 62, gender: 'Male', phone: '0734567890',
+                        email: 'michael@example.com', address: 'Kisumu', bloodGroup: 'B+', allergies: 'None',
+                        chronic: 'Diabetes Type 2', insurance: 'NHIF', emergency: '0734567891', nextOfKin: 'Grace Ochieng',
+                        history: 'Diabetes management', status: 'Active' }
+                ]);
+
+                DB.setAppointments([
+                    { id: 1, patientId: 'P001', patientName: 'John Doe', doctor: 'doctor', date: '2026-07-15',
+                        time: '09:00', status: 'Scheduled', notes: '' },
+                    { id: 2, patientId: 'P002', patientName: 'Sarah Wanjiru', doctor: 'doctor', date: '2026-07-15',
+                        time: '10:30', status: 'Scheduled', notes: '' },
+                    { id: 3, patientId: 'P003', patientName: 'Michael Ochieng', doctor: 'doctor', date: '2026-07-16',
+                        time: '14:00', status: 'Scheduled', notes: '' }
+                ]);
+
+                DB.setMedications([
+                    { id: 1, name: 'Amoxicillin', category: 'Antibiotic', stock: 500, price: 250, expiry: '2027-01-01',
+                        supplier: 'Pharma Ltd' },
+                    { id: 2, name: 'Paracetamol', category: 'Analgesic', stock: 1000, price: 50, expiry: '2026-12-01',
+                        supplier: 'MediSupplies' },
+                    { id: 3, name: 'Insulin', category: 'Hormone', stock: 80, price: 1200, expiry: '2026-09-01',
+                        supplier: 'BioPharma' }
+                ]);
+
+                DB.setLabTests([
+                    { id: 1, patientId: 'P001', patientName: 'John Doe', requestedBy: 'doctor', testType: 'Blood Sugar',
+                        status: 'Pending', result: '', requestedDate: '2026-07-14' },
+                    { id: 2, patientId: 'P002', patientName: 'Sarah Wanjiru', requestedBy: 'doctor',
+                        testType: 'Complete Blood Count', status: 'Completed', result: 'Normal range',
+                        requestedDate: '2026-07-13' }
+                ]);
+
+                DB.setBills([
+                    { id: 1, patientId: 'P001', patientName: 'John Doe', amount: 2500, paid: 1500, balance: 1000,
+                        status: 'Partial', date: '2026-07-14', items: 'Consultation - 1000, Lab - 1500' },
+                    { id: 2, patientId: 'P002', patientName: 'Sarah Wanjiru', amount: 3500, paid: 3500, balance: 0,
+                        status: 'Paid', date: '2026-07-13', items: 'Consultation - 1000, Pharmacy - 2500' }
+                ]);
+            }
+        }
+        seedDatabase();
+
+        // =====================================================================
+        //  STATE
+        // =====================================================================
+        let currentUser = null;
+        let currentPage = 'dashboard';
+
+        // =====================================================================
+        //  TOAST SYSTEM
+        // =====================================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // =====================================================================
+        //  AUTH VIEWS
+        // =====================================================================
+        function switchAuthView(viewId) {
+            document.querySelectorAll('.auth-container').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // ----- Login -----
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            const user = DB.getUsers().find(u => u.username === username && u.password === password);
+            if (!user) {
+                showToast('Invalid username or password', 'error');
+                return;
+            }
+            if (user.status !== 'Active') {
+                showToast(`Account is ${user.status}. Contact administrator.`, 'warning');
+                return;
+            }
+
+            currentUser = user;
+            initApp();
+        });
+
+        // ----- Register -----
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const users = DB.getUsers();
+            const fullname = document.getElementById('reg-fullname').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const role = document.getElementById('reg-role').value;
+
+            if (!fullname || !username || !password) {
+                showToast('All fields are required', 'error');
+                return;
+            }
+            if (users.some(u => u.username === username)) {
+                showToast('Username already exists', 'error');
+                return;
+            }
+
+            users.push({
+                id: Date.now(),
+                fullname,
+                username,
+                password,
+                role,
+                status: 'Pending',
+                photo: ''
+            });
+            DB.setUsers(users);
+            showToast('Registration submitted. Waiting for admin approval.', 'success');
+            switchAuthView('login-view');
+            document.getElementById('register-form').reset();
+        });
+
+        // =====================================================================
+        //  SIDEBAR TOGGLE (mobile)
+        // =====================================================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // =====================================================================
+        //  LOGOUT
+        // =====================================================================
+        function logout() {
+            currentUser = null;
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('auth-wrapper').style.display = 'flex';
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('register-view').classList.add('hidden');
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
+        }
+
+        // =====================================================================
+        //  APP INIT
+        // =====================================================================
+        function initApp() {
+            document.getElementById('auth-wrapper').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+
+            document.getElementById('current-user-name').textContent = currentUser.fullname;
+            document.getElementById('current-user-role').textContent = currentUser.role;
+            document.getElementById('user-avatar').textContent = currentUser.fullname.charAt(0);
+
+            buildSidebar();
+            navigateTo('dashboard');
+        }
+
+        // =====================================================================
+        //  SIDEBAR BUILDER
+        // =====================================================================
+        function buildSidebar() {
+            const menu = document.getElementById('sidebar-menu');
+            menu.innerHTML = '';
+
+            const role = currentUser.role;
+            const links = [];
+
+            // Common
+            links.push({ id: 'dashboard', label: '📊 Dashboard' });
+
+            if (role === 'Super Admin') {
+                links.push({ id: 'users', label: '👥 User Management' });
+                links.push({ id: 'patients', label: '🧑‍⚕️ All Patients' });
+                links.push({ id: 'appointments', label: '📅 All Appointments' });
+                links.push({ id: 'pharmacy', label: '💊 Pharmacy' });
+                links.push({ id: 'lab', label: '🔬 Laboratory' });
+                links.push({ id: 'billing', label: '💰 Billing' });
+                links.push({ id: 'reports', label: '📈 Reports' });
+            } else if (role === 'Receptionist') {
+                links.push({ id: 'patients', label: '🧑‍⚕️ Patient Registration' });
+                links.push({ id: 'appointments', label: '📅 Manage Appointments' });
+                links.push({ id: 'queue', label: '🔄 Patient Queue' });
+            } else if (role === 'Doctor') {
+                links.push({ id: 'appointments', label: '📅 My Appointments' });
+                links.push({ id: 'patients', label: '🧑‍⚕️ My Patients' });
+                links.push({ id: 'medical-records', label: '📋 Medical Records' });
+                links.push({ id: 'lab', label: '🔬 Lab Requests' });
+                links.push({ id: 'prescriptions', label: '💊 Prescriptions' });
+            } else if (role === 'Nurse') {
+                links.push({ id: 'patients', label: '🧑‍⚕️ Assigned Patients' });
+                links.push({ id: 'vitals', label: '❤️ Vital Signs' });
+                links.push({ id: 'nursing-notes', label: '📝 Nursing Notes' });
+            } else if (role === 'Lab Technician') {
+                links.push({ id: 'lab', label: '🔬 Lab Requests' });
+                links.push({ id: 'lab-results', label: '📄 Results' });
+            } else if (role === 'Pharmacist') {
+                links.push({ id: 'pharmacy', label: '💊 Pharmacy' });
+                links.push({ id: 'prescriptions', label: '📋 Prescriptions' });
+            } else if (role === 'Accountant') {
+                links.push({ id: 'billing', label: '💰 Billing' });
+                links.push({ id: 'reports', label: '📈 Financial Reports' });
+            }
+
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.innerHTML = `<span class="icon">${link.label.split(' ')[0]}</span> ${link.label.split(' ').slice(1).join(' ')}`;
+                a.dataset.page = link.id;
+                a.onclick = () => navigateTo(link.id);
+                menu.appendChild(a);
+            });
+        }
+
+        // =====================================================================
+        //  NAVIGATION
+        // =====================================================================
+        function navigateTo(pageId) {
+            currentPage = pageId;
+            document.querySelectorAll('.sidebar-menu a').forEach(a => {
+                a.classList.toggle('active', a.dataset.page === pageId);
+            });
+
+            const content = document.getElementById('main-content');
+            const header = document.getElementById('page-header');
+
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
+
+            switch (pageId) {
+                case 'dashboard':
+                    header.textContent = 'Dashboard';
+                    content.innerHTML = renderDashboard();
+                    break;
+                case 'users':
+                    header.textContent = 'User Management';
+                    content.innerHTML = renderUserManagement();
+                    break;
+                case 'patients':
+                    header.textContent = 'Patient Management';
+                    content.innerHTML = renderPatientManagement();
+                    break;
+                case 'appointments':
+                    header.textContent = 'Appointments';
+                    content.innerHTML = renderAppointments();
+                    break;
+                case 'medical-records':
+                    header.textContent = 'Medical Records';
+                    content.innerHTML = renderMedicalRecords();
+                    break;
+                case 'pharmacy':
+                    header.textContent = 'Pharmacy';
+                    content.innerHTML = renderPharmacy();
+                    break;
+                case 'lab':
+                    header.textContent = 'Laboratory';
+                    content.innerHTML = renderLab();
+                    break;
+                case 'billing':
+                    header.textContent = 'Billing';
+                    content.innerHTML = renderBilling();
+                    break;
+                case 'reports':
+                    header.textContent = 'Reports';
+                    content.innerHTML = renderReports();
+                    break;
+                case 'prescriptions':
+                    header.textContent = 'Prescriptions';
+                    content.innerHTML = renderPrescriptions();
+                    break;
+                case 'queue':
+                    header.textContent = 'Patient Queue';
+                    content.innerHTML = renderQueue();
+                    break;
+                case 'vitals':
+                    header.textContent = 'Vital Signs';
+                    content.innerHTML = renderVitals();
+                    break;
+                case 'nursing-notes':
+                    header.textContent = 'Nursing Notes';
+                    content.innerHTML = renderNursingNotes();
+                    break;
+                case 'lab-results':
+                    header.textContent = 'Lab Results';
+                    content.innerHTML = renderLabResults();
+                    break;
+                default:
+                    content.innerHTML =
+                    `<div class="card"><p>Page under development.</p></div>`;
+            }
+        }
+
+        // =====================================================================
+        //  RENDER FUNCTIONS
+        // =====================================================================
+
+        // ----- DASHBOARD -----
+        function renderDashboard() {
+            const users = DB.getUsers();
+            const patients = DB.getPatients();
+            const appts = DB.getAppointments();
+            const bills = DB.getBills();
+            const role = currentUser.role;
+
+            let stats = [];
+            let content = '';
+
+            if (role === 'Super Admin') {
+                const pending = users.filter(u => u.status === 'Pending').length;
+                const totalRevenue = bills.reduce((sum, b) => sum + b.paid, 0);
+                stats = [
+                    { label: 'Staff', value: users.length, sub: `${pending} pending` },
+                    { label: 'Patients', value: patients.length, sub: 'Total registered' },
+                    { label: 'Appointments', value: appts.length, sub: 'Today: ' + appts.filter(a => a.date === new Date()
+                            .toISOString().slice(0, 10)).length },
+                    { label: 'Revenue', value: `KSh ${totalRevenue.toLocaleString()}`, sub: 'Total paid' }
+                ];
+                content = `
+                    <div class="card">
+                        <h3>Recent Activities</h3>
+                        <p>${pending} users awaiting approval. ${patients.length} patients in system.</p>
+                        <div class="mt-1">
+                            <button class="btn btn-primary btn-sm" onclick="navigateTo('users')">Manage Users</button>
+                            <button class="btn btn-success btn-sm" onclick="navigateTo('patients')">View Patients</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>System Overview</h3>
+                        <p><strong>Appointments:</strong> ${appts.length} total</p>
+                        <p><strong>Bills:</strong> ${bills.length} invoices</p>
+                        <p><strong>Medications:</strong> ${DB.getMedications().length} items in stock</p>
+                    </div>
+                `;
+            } else if (role === 'Receptionist') {
+                const today = new Date().toISOString().slice(0, 10);
+                const todayAppts = appts.filter(a => a.date === today);
+                stats = [
+                    { label: 'Patients', value: patients.length },
+                    { label: 'Today\'s Appointments', value: todayAppts.length },
+                    { label: 'Queue', value: todayAppts.filter(a => a.status === 'Scheduled').length }
+                ];
+                content = `
+                    <div class="card">
+                        <h3>Quick Actions</h3>
+                        <div class="flex gap-2" style="flex-wrap:wrap;">
+                            <button class="btn btn-primary btn-sm" onclick="navigateTo('patients')">Register Patient</button>
+                            <button class="btn btn-success btn-sm" onclick="navigateTo('appointments')">Book Appointment</button>
+                            <button class="btn btn-warning btn-sm" onclick="navigateTo('queue')">View Queue</button>
+                        </div>
+                    </div>
+                `;
+            } else if (role === 'Doctor') {
+                const myAppts = appts.filter(a => a.doctor === currentUser.username);
+                stats = [
+                    { label: 'My Patients', value: new Set(myAppts.map(a => a.patientId)).size },
+                    { label: 'Appointments', value: myAppts.length },
+                    { label: 'Pending Lab', value: DB.getLabTests().filter(l => l.requestedBy === currentUser.username && l
+                            .status === 'Pending').length }
+                ];
+                content = `
+                    <div class="card">
+                        <h3>Today's Schedule</h3>
+                        ${myAppts.filter(a => a.date === new Date().toISOString().slice(0,10)).length === 0 ? 
+                            '<p class="text-muted">No appointments today.</p>' :
+                            `<table><tr><th>Patient</th><th>Time</th><th>Status</th></tr>
+                            ${myAppts.filter(a => a.date === new Date().toISOString().slice(0,10)).map(a => 
+                                `<tr><td>${a.patientName}</td><td>${a.time}</td><td><span class="status-badge ${a.status.toLowerCase()}">${a.status}</span></td></tr>`
+                            ).join('')}</table>`
+                        }
+                    </div>
+                `;
+            } else if (role === 'Nurse') {
+                stats = [
+                    { label: 'Assigned Patients', value: patients.length },
+                    { label: 'Admitted', value: patients.filter(p => p.status === 'Admitted').length }
+                ];
+            } else if (role === 'Pharmacist') {
+                const meds = DB.getMedications();
+                const lowStock = meds.filter(m => m.stock < 100);
+                stats = [
+                    { label: 'Total Medicines', value: meds.length },
+                    { label: 'Low Stock Alert', value: lowStock.length },
+                    { label: 'Total Stock Value', value: `KSh ${meds.reduce((s,m) => s + (m.stock * m.price), 0).toLocaleString()}` }
+                ];
+                content = `
+                    <div class="card">
+                        <h3>⚠️ Low Stock Alert</h3>
+                        ${lowStock.length === 0 ? '<p class="text-muted">All medicines are well stocked.</p>' :
+                            `<table><tr><th>Medicine</th><th>Stock</th><th>Action</th></tr>
+                            ${lowStock.map(m => `<tr><td>${m.name}</td><td>${m.stock}</td><td><button class="btn btn-warning btn-sm" onclick="showToast('Ordering more ${m.name}...','info')">Reorder</button></td></tr>`).join('')}</table>`
+                        }
+                    </div>
+                `;
+            } else if (role === 'Accountant') {
+                const totalBills = bills.reduce((s, b) => s + b.amount, 0);
+                const totalPaid = bills.reduce((s, b) => s + b.paid, 0);
+                stats = [
+                    { label: 'Total Bills', value: `KSh ${totalBills.toLocaleString()}` },
+                    { label: 'Collected', value: `KSh ${totalPaid.toLocaleString()}` },
+                    { label: 'Outstanding', value: `KSh ${(totalBills - totalPaid).toLocaleString()}` },
+                    { label: 'Invoices', value: bills.length }
+                ];
+            } else {
+                stats = [
+                    { label: 'Patients', value: patients.length },
+                    { label: 'Appointments', value: appts.length }
+                ];
+            }
+
+            const statsHTML = stats.map(s =>
+                `<div class="stat-card ${s.color || ''}">
+                    <div class="label">${s.label}</div>
+                    <div class="value">${s.value}</div>
+                    ${s.sub ? `<div class="sub">${s.sub}</div>` : ''}
+                </div>`
+            ).join('');
+
+            return `<div class="stats-grid">${statsHTML}</div>${content}`;
+        }
+
+        // ----- USER MANAGEMENT (Super Admin only) -----
+        function renderUserManagement() {
+            if (currentUser.role !== 'Super Admin') return '<div class="card"><p class="text-muted">Access denied.</p></div>';
+
+            const users = DB.getUsers().filter(u => u.role !== 'Super Admin');
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Staff Accounts</h3>
+                        <span class="text-muted text-sm">${users.filter(u => u.status === 'Pending').length} pending approvals</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>ID</th><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+                            ${users.map(u => `
+                                <tr>
+                                    <td>${u.id}</td>
+                                    <td><strong>${u.fullname}</strong></td>
+                                    <td>${u.username}</td>
+                                    <td>${u.role}</td>
+                                    <td><span class="status-badge ${u.status.toLowerCase()}">${u.status}</span></td>
+                                    <td>
+                                        ${u.status === 'Pending' ? `
+                                            <button class="btn btn-success btn-sm" onclick="approveUser(${u.id})">Approve</button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectUser(${u.id})">Reject</button>
+                                        ` : u.status === 'Active' ? `
+                                            <button class="btn btn-danger btn-sm" onclick="toggleUserStatus(${u.id}, 'Suspended')">Suspend</button>
+                                        ` : u.status === 'Suspended' ? `
+                                            <button class="btn btn-success btn-sm" onclick="toggleUserStatus(${u.id}, 'Active')">Activate</button>
+                                        ` : ''}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function approveUser(id) {
+            let users = DB.getUsers();
+            users = users.map(u => u.id === id ? { ...u, status: 'Active' } : u);
+            DB.setUsers(users);
+            showToast('User approved successfully.', 'success');
+            navigateTo('users');
+        }
+
+        function rejectUser(id) {
+            let users = DB.getUsers();
+            users = users.map(u => u.id === id ? { ...u, status: 'Rejected' } : u);
+            DB.setUsers(users);
+            showToast('User rejected.', 'warning');
+            navigateTo('users');
+        }
+
+        function toggleUserStatus(id, newStatus) {
+            let users = DB.getUsers();
+            users = users.map(u => u.id === id ? { ...u, status: newStatus } : u);
+            DB.setUsers(users);
+            showToast(`User ${newStatus === 'Active' ? 'activated' : 'suspended'}.`, 'info');
+            navigateTo('users');
+        }
+
+        // ----- PATIENT MANAGEMENT -----
+        function renderPatientManagement() {
+            const patients = DB.getPatients();
+            const role = currentUser.role;
+            const canEdit = role === 'Super Admin' || role === 'Receptionist' || role === 'Doctor';
+
+            let formHTML = '';
+            if (role === 'Receptionist' || role === 'Super Admin') {
+                formHTML = `
+                    <div class="card">
+                        <div class="card-header"><h3>Register New Patient</h3></div>
+                        <form onsubmit="registerPatient(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group"><label>Full Name</label><input type="text" id="pat-name" required /></div>
+                                <div class="form-group"><label>Age</label><input type="number" id="pat-age" required /></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Gender</label><select id="pat-gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
+                                <div class="form-group"><label>Phone</label><input type="text" id="pat-phone" required /></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Email</label><input type="email" id="pat-email" /></div>
+                                <div class="form-group"><label>Blood Group</label><input type="text" id="pat-blood" placeholder="e.g. A+" /></div>
+                            </div>
+                            <div class="form-group"><label>Address</label><input type="text" id="pat-address" /></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Allergies</label><input type="text" id="pat-allergies" placeholder="e.g. Penicillin" /></div>
+                                <div class="form-group"><label>Chronic Diseases</label><input type="text" id="pat-chronic" placeholder="e.g. Diabetes" /></div>
+                            </div>
+                            <div class="form-group"><label>Insurance</label><input type="text" id="pat-insurance" placeholder="e.g. NHIF" /></div>
+                            <button type="submit" class="btn btn-primary">Register Patient</button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            const patientRows = patients.map(p => `
+                <tr>
+                    <td><strong>${p.id}</strong></td>
+                    <td>${p.name}</td>
+                    <td>${p.age}</td>
+                    <td>${p.gender}</td>
+                    <td>${p.phone}</td>
+                    <td>${p.bloodGroup || '—'}</td>
+                    <td>${p.chronic || 'None'}</td>
+                    <td><span class="status-badge ${p.status?.toLowerCase() || 'active'}">${p.status || 'Active'}</span></td>
+                    ${role === 'Doctor' ? `<td><button class="btn btn-primary btn-sm" onclick="viewPatient('${p.id}')">View</button></td>` : ''}
+                </tr>
+            `).join('');
+
+            return `
+                ${formHTML}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Patient Records</h3>
+                        <span class="text-muted text-sm">${patients.length} patients</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th><th>Blood</th><th>Chronic</th><th>Status</th>${role === 'Doctor' ? '<th>Action</th>' : ''}</tr>
+                            ${patientRows}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function registerPatient(e) {
+            e.preventDefault();
+            const patients = DB.getPatients();
+            const newPat = {
+                id: 'P' + String(patients.length + 1).padStart(3, '0'),
+                name: document.getElementById('pat-name').value.trim(),
+                age: parseInt(document.getElementById('pat-age').value),
+                gender: document.getElementById('pat-gender').value,
+                phone: document.getElementById('pat-phone').value.trim(),
+                email: document.getElementById('pat-email').value.trim(),
+                address: document.getElementById('pat-address').value.trim(),
+                bloodGroup: document.getElementById('pat-blood').value.trim(),
+                allergies: document.getElementById('pat-allergies').value.trim(),
+                chronic: document.getElementById('pat-chronic').value.trim(),
+                insurance: document.getElementById('pat-insurance').value.trim(),
+                status: 'Active',
+                history: 'Initial registration'
+            };
+            patients.push(newPat);
+            DB.setPatients(patients);
+            showToast(`Patient ${newPat.name} registered successfully.`, 'success');
+            navigateTo('patients');
+            document.getElementById('pat-name').closest('form').reset();
+        }
+
+        function viewPatient(id) {
+            const patients = DB.getPatients();
+            const p = patients.find(pat => pat.id === id);
+            if (!p) return showToast('Patient not found', 'error');
+            showToast(`${p.name} — Age: ${p.age}, Blood: ${p.bloodGroup || 'N/A'}, History: ${p.history || 'None'}`, 'info');
+        }
+
+        // ----- APPOINTMENTS -----
+        function renderAppointments() {
+            const appts = DB.getAppointments();
+            const patients = DB.getPatients();
+            const role = currentUser.role;
+            const isReceptionist = role === 'Receptionist' || role === 'Super Admin';
+            const isDoctor = role === 'Doctor';
+
+            let filtered = appts;
+            if (isDoctor) {
+                filtered = appts.filter(a => a.doctor === currentUser.username);
+            }
+
+            let bookForm = '';
+            if (isReceptionist) {
+                const doctors = DB.getUsers().filter(u => u.role === 'Doctor' && u.status === 'Active');
+                bookForm = `
+                    <div class="card">
+                        <div class="card-header"><h3>Book Appointment</h3></div>
+                        <form onsubmit="bookAppointment(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Patient</label>
+                                    <select id="appt-patient" required>
+                                        ${patients.map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Doctor</label>
+                                    <select id="appt-doctor" required>
+                                        ${doctors.map(d => `<option value="${d.username}">${d.fullname}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Date</label><input type="date" id="appt-date" required /></div>
+                                <div class="form-group"><label>Time</label><input type="time" id="appt-time" required /></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            const rows = filtered.map(a => {
+                const p = patients.find(pat => pat.id === a.patientId);
+                return `
+                    <tr>
+                        <td>${a.id}</td>
+                        <td>${a.patientName}</td>
+                        <td>${a.doctor}</td>
+                        <td>${a.date}</td>
+                        <td>${a.time}</td>
+                        <td><span class="status-badge ${a.status.toLowerCase()}">${a.status}</span></td>
+                        ${isReceptionist || role === 'Super Admin' ? `
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="updateApptStatus(${a.id}, 'Completed')">Complete</button>
+                                <button class="btn btn-danger btn-sm" onclick="updateApptStatus(${a.id}, 'Cancelled')">Cancel</button>
+                            </td>
+                        ` : isDoctor ? `
+                            <td><button class="btn btn-primary btn-sm" onclick="addConsultation('${a.patientId}')">Consult</button></td>
+                        ` : ''}
+                    </tr>
+                `;
+            }).join('');
+
+            return `
+                ${bookForm}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>${isDoctor ? 'My Appointments' : 'All Appointments'}</h3>
+                        <span class="text-muted text-sm">${filtered.length} appointments</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+                            ${rows || '<tr><td colspan="7" class="text-muted" style="text-align:center;">No appointments found.</td></tr>'}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function bookAppointment(e) {
+            e.preventDefault();
+            const appts = DB.getAppointments();
+            const patients = DB.getPatients();
+            const patId = document.getElementById('appt-patient').value;
+            const patient = patients.find(p => p.id === patId);
+            const doctor = document.getElementById('appt-doctor').value;
+            const date = document.getElementById('appt-date').value;
+            const time = document.getElementById('appt-time').value;
+
+            if (!patient) return showToast('Patient not found', 'error');
+
+            appts.push({
+                id: Date.now(),
+                patientId: patId,
+                patientName: patient.name,
+                doctor,
+                date,
+                time,
+                status: 'Scheduled',
+                notes: ''
+            });
+            DB.setAppointments(appts);
+            showToast(`Appointment booked for ${patient.name}`, 'success');
+            navigateTo('appointments');
+        }
+
+        function updateApptStatus(id, status) {
+            let appts = DB.getAppointments();
+            appts = appts.map(a => a.id === id ? { ...a, status } : a);
+            DB.setAppointments(appts);
+            showToast(`Appointment ${status.toLowerCase()}`, 'info');
+            navigateTo('appointments');
+        }
+
+        // ----- MEDICAL RECORDS (Doctor) -----
+        function renderMedicalRecords() {
+            const appts = DB.getAppointments().filter(a => a.doctor === currentUser.username);
+            const patients = DB.getPatients();
+
+            return `
+                <div class="card">
+                    <div class="card-header"><h3>My Patients' Medical Records</h3></div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>Patient</th><th>Age</th><th>Chronic</th><th>Allergies</th><th>History</th><th>Action</th></tr>
+                            ${patients.filter(p => appts.some(a => a.patientId === p.id)).map(p => `
+                                <tr>
+                                    <td><strong>${p.name}</strong></td>
+                                    <td>${p.age}</td>
+                                    <td>${p.chronic || 'None'}</td>
+                                    <td>${p.allergies || 'None'}</td>
+                                    <td>${p.history || '—'}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="addConsultation('${p.id}')">Add Notes</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addConsultation(patientId) {
+            const patients = DB.getPatients();
+            const p = patients.find(pat => pat.id === patientId);
+            if (!p) return showToast('Patient not found', 'error');
+
+            const notes = prompt(`Enter consultation notes for ${p.name}:`);
+            if (notes && notes.trim()) {
+                const updated = patients.map(pat =>
+                    pat.id === patientId ? { ...pat, history: (pat.history || '') + '\n' + new Date().toLocaleDateString() +
+                            ': ' + notes.trim() } : pat
+                );
+                DB.setPatients(updated);
+                showToast('Medical record updated.', 'success');
+                navigateTo('medical-records');
+            }
+        }
+
+        // ----- PHARMACY -----
+        function renderPharmacy() {
+            const meds = DB.getMedications();
+            const role = currentUser.role;
+            const canManage = role === 'Super Admin' || role === 'Pharmacist';
+
+            let addForm = '';
+            if (canManage) {
+                addForm = `
+                    <div class="card">
+                        <div class="card-header"><h3>Add Medicine</h3></div>
+                        <form onsubmit="addMedicine(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group"><label>Name</label><input type="text" id="med-name" required /></div>
+                                <div class="form-group"><label>Category</label><input type="text" id="med-category" required /></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Stock</label><input type="number" id="med-stock" required /></div>
+                                <div class="form-group"><label>Price (KSh)</label><input type="number" id="med-price" required /></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Expiry Date</label><input type="date" id="med-expiry" required /></div>
+                                <div class="form-group"><label>Supplier</label><input type="text" id="med-supplier" required /></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Medicine</button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            return `
+                ${addForm}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Drug Inventory</h3>
+                        <span class="text-muted text-sm">${meds.length} items</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>Name</th><th>Category</th><th>Stock</th><th>Price (KSh)</th><th>Expiry</th><th>Supplier</th>${canManage ? '<th>Action</th>' : ''}</tr>
+                            ${meds.map(m => `
+                                <tr>
+                                    <td><strong>${m.name}</strong></td>
+                                    <td>${m.category}</td>
+                                    <td style="color:${m.stock < 100 ? 'var(--danger)' : 'inherit'}">${m.stock} ${m.stock < 100 ? '⚠️' : ''}</td>
+                                    <td>${m.price}</td>
+                                    <td>${m.expiry}</td>
+                                    <td>${m.supplier}</td>
+                                    ${canManage ? `<td><button class="btn btn-danger btn-sm" onclick="removeMedicine(${m.id})">Remove</button></td>` : ''}
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addMedicine(e) {
+            e.preventDefault();
+            const meds = DB.getMedications();
+            meds.push({
+                id: Date.now(),
+                name: document.getElementById('med-name').value.trim(),
+                category: document.getElementById('med-category').value.trim(),
+                stock: parseInt(document.getElementById('med-stock').value),
+                price: parseInt(document.getElementById('med-price').value),
+                expiry: document.getElementById('med-expiry').value,
+                supplier: document.getElementById('med-supplier').value.trim()
+            });
+            DB.setMedications(meds);
+            showToast('Medicine added successfully.', 'success');
+            navigateTo('pharmacy');
+        }
+
+        function removeMedicine(id) {
+            let meds = DB.getMedications();
+            meds = meds.filter(m => m.id !== id);
+            DB.setMedications(meds);
+            showToast('Medicine removed.', 'info');
+            navigateTo('pharmacy');
+        }
+
+        // ----- LABORATORY -----
+        function renderLab() {
+            const tests = DB.getLabTests();
+            const role = currentUser.role;
+            const isLabTech = role === 'Lab Technician' || role === 'Super Admin';
+            const isDoctor = role === 'Doctor';
+
+            let requestForm = '';
+            if (isDoctor) {
+                const patients = DB.getPatients();
+                requestForm = `
+                    <div class="card">
+                        <div class="card-header"><h3>Request Lab Test</h3></div>
+                        <form onsubmit="requestLabTest(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Patient</label>
+                                    <select id="lab-patient" required>
+                                        ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Test Type</label>
+                                    <input type="text" id="lab-test-type" placeholder="e.g. Blood Sugar" required />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Request Test</button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            let filtered = tests;
+            if (isDoctor) {
+                filtered = tests.filter(t => t.requestedBy === currentUser.username);
+            }
+
+            const rows = filtered.map(t => {
+                const p = DB.getPatients().find(pat => pat.id === t.patientId);
+                return `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.patientName}</td>
+                        <td>${t.testType}</td>
+                        <td><span class="status-badge ${t.status.toLowerCase()}">${t.status}</span></td>
+                        <td>${t.result || '—'}</td>
+                        ${isLabTech ? `
+                            <td>
+                                ${t.status === 'Pending' ? `<button class="btn btn-primary btn-sm" onclick="completeLabTest(${t.id})">Complete & Add Result</button>` : ''}
+                            </td>
+                        ` : ''}
+                    </tr>
+                `;
+            }).join('');
+
+            return `
+                ${requestForm}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Laboratory Tests</h3>
+                        <span class="text-muted text-sm">${filtered.length} tests</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>ID</th><th>Patient</th><th>Test Type</th><th>Status</th><th>Result</th>${isLabTech ? '<th>Action</th>' : ''}</tr>
+                            ${rows || '<tr><td colspan="6" class="text-muted" style="text-align:center;">No tests found.</td></tr>'}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function requestLabTest(e) {
+            e.preventDefault();
+            const tests = DB.getLabTests();
+            const patients = DB.getPatients();
+            const patId = document.getElementById('lab-patient').value;
+            const p = patients.find(pat => pat.id === patId);
+            if (!p) return showToast('Patient not found', 'error');
+
+            tests.push({
+                id: Date.now(),
+                patientId: patId,
+                patientName: p.name,
+                requestedBy: currentUser.username,
+                testType: document.getElementById('lab-test-type').value.trim(),
+                status: 'Pending',
+                result: '',
+                requestedDate: new Date().toISOString().slice(0, 10)
+            });
+            DB.setLabTests(tests);
+            showToast('Lab test requested.', 'success');
+            navigateTo('lab');
+        }
+
+        function completeLabTest(id) {
+            const result = prompt('Enter the test result:');
+            if (result !== null) {
+                let tests = DB.getLabTests();
+                tests = tests.map(t => t.id === id ? { ...t, status: 'Completed', result: result.trim() || 'Normal' } : t);
+                DB.setLabTests(tests);
+                showToast('Test completed.', 'success');
+                navigateTo('lab');
+            }
+        }
+
+        function renderLabResults() {
+            const tests = DB.getLabTests().filter(t => t.status === 'Completed');
+            return `
+                <div class="card">
+                    <div class="card-header"><h3>Completed Lab Results</h3></div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>Patient</th><th>Test Type</th><th>Result</th><th>Date</th></tr>
+                            ${tests.map(t => `
+                                <tr><td>${t.patientName}</td><td>${t.testType}</td><td>${t.result}</td><td>${t.requestedDate}</td></tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ----- BILLING -----
+        function renderBilling() {
+            const bills = DB.getBills();
+            const patients = DB.getPatients();
+            const role = currentUser.role;
+            const canManage = role === 'Super Admin' || role === 'Accountant';
+
+            let createForm = '';
+            if (canManage) {
+                createForm = `
+                    <div class="card">
+                        <div class="card-header"><h3>Create Invoice</h3></div>
+                        <form onsubmit="createBill(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Patient</label>
+                                    <select id="bill-patient" required>
+                                        ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group"><label>Amount (KSh)</label><input type="number" id="bill-amount" required /></div>
+                            </div>
+                            <div class="form-group"><label>Items / Description</label><input type="text" id="bill-items" placeholder="e.g. Consultation, Lab" required /></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Amount Paid</label><input type="number" id="bill-paid" value="0" /></div>
+                                <div class="form-group"><label>Payment Date</label><input type="date" id="bill-date" required /></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Invoice</button>
+                        </form>
+                    </div>
+                `;
+            }
+
+            const totalBills = bills.reduce((s, b) => s + b.amount, 0);
+            const totalPaid = bills.reduce((s, b) => s + b.paid, 0);
+
+            return `
+                <div class="stats-grid">
+                    <div class="stat-card green"><div class="label">Total Invoices</div><div class="value">KSh ${totalBills.toLocaleString()}</div></div>
+                    <div class="stat-card blue"><div class="label">Collected</div><div class="value">KSh ${totalPaid.toLocaleString()}</div></div>
+                    <div class="stat-card red"><div class="label">Outstanding</div><div class="value">KSh ${(totalBills - totalPaid).toLocaleString()}</div></div>
+                    <div class="stat-card yellow"><div class="label">Invoices</div><div class="value">${bills.length}</div></div>
+                </div>
+                ${createForm}
+                <div class="card">
+                    <div class="card-header"><h3>All Invoices</h3></div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>Invoice</th><th>Patient</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Status</th><th>Date</th></tr>
+                            ${bills.map(b => `
+                                <tr>
+                                    <td>#${b.id}</td>
+                                    <td>${b.patientName}</td>
+                                    <td>KSh ${b.amount}</td>
+                                    <td>KSh ${b.paid}</td>
+                                    <td>KSh ${b.amount - b.paid}</td>
+                                    <td><span class="status-badge ${b.status.toLowerCase()}">${b.status}</span></td>
+                                    <td>${b.date}</td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBill(e) {
+            e.preventDefault();
+            const bills = DB.getBills();
+            const patients = DB.getPatients();
+            const patId = document.getElementById('bill-patient').value;
+            const p = patients.find(pat => pat.id === patId);
+            if (!p) return showToast('Patient not found', 'error');
+
+            const amount = parseInt(document.getElementById('bill-amount').value);
+            const paid = parseInt(document.getElementById('bill-paid').value) || 0;
+            const balance = amount - paid;
+            const status = balance === 0 ? 'Paid' : balance < amount ? 'Partial' : 'Unpaid';
+
+            bills.push({
+                id: Date.now(),
+                patientId: patId,
+                patientName: p.name,
+                amount,
+                paid,
+                balance,
+                status,
+                date: document.getElementById('bill-date').value,
+                items: document.getElementById('bill-items').value.trim()
+            });
+            DB.setBills(bills);
+            showToast(`Invoice created for ${p.name}`, 'success');
+            navigateTo('billing');
+        }
+
+        // ----- REPORTS -----
+        function renderReports() {
+            const patients = DB.getPatients();
+            const appts = DB.getAppointments();
+            const bills = DB.getBills();
+            const meds = DB.getMedications();
+            const tests = DB.getLabTests();
+
+            const totalRevenue = bills.reduce((s, b) => s + b.paid, 0);
+            const totalBills = bills.reduce((s, b) => s + b.amount, 0);
+
+            return `
+                <div class="stats-grid">
+                    <div class="stat-card green"><div class="label">Total Patients</div><div class="value">${patients.length}</div></div>
+                    <div class="stat-card blue"><div class="label">Appointments</div><div class="value">${appts.length}</div></div>
+                    <div class="stat-card green"><div class="label">Revenue</div><div class="value">KSh ${totalRevenue.toLocaleString()}</div></div>
+                    <div class="stat-card yellow"><div class="label">Outstanding</div><div class="value">KSh ${(totalBills - totalRevenue).toLocaleString()}</div></div>
+                    <div class="stat-card blue"><div class="label">Medicines</div><div class="value">${meds.length}</div></div>
+                    <div class="stat-card green"><div class="label">Lab Tests</div><div class="value">${tests.length}</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Report</h3>
+                        <div class="actions">
+                            <button class="btn btn-primary btn-sm" onclick="showToast('Exporting PDF...','info')">📄 Export PDF</button>
+                            <button class="btn btn-success btn-sm" onclick="showToast('Exporting Excel...','info')">📊 Export Excel</button>
+                        </div>
+                    </div>
+                    <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                    <p><strong>Active Patients:</strong> ${patients.filter(p => p.status !== 'Inactive').length}</p>
+                    <p><strong>Pending Appointments:</strong> ${appts.filter(a => a.status === 'Scheduled').length}</p>
+                    <p><strong>Completed Tests:</strong> ${tests.filter(t => t.status === 'Completed').length}</p>
+                </div>
+            `;
+        }
+
+        // ----- PRESCRIPTIONS (Doctor / Pharmacist) -----
+        function renderPrescriptions() {
+            const patients = DB.getPatients();
+            const meds = DB.getMedications();
+
+            if (currentUser.role === 'Doctor') {
+                return `
+                    <div class="card">
+                        <div class="card-header"><h3>Write Prescription</h3></div>
+                        <form onsubmit="writePrescription(event)" class="fade-in">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Patient</label>
+                                    <select id="rx-patient" required>
+                                        ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Medicine</label>
+                                    <select id="rx-medicine" required>
+                                        ${meds.map(m => `<option value="${m.name}">${m.name} (${m.stock} in stock)</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Dosage</label><input type="text" id="rx-dosage" placeholder="e.g. 500mg twice daily" required /></div>
+                                <div class="form-group"><label>Duration</label><input type="text" id="rx-duration" placeholder="e.g. 7 days" required /></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Issue Prescription</button>
+                        </form>
+                    </div>
+                `;
+            } else if (currentUser.role === 'Pharmacist') {
+                return `
+                    <div class="card">
+                        <div class="card-header"><h3>Dispense Prescription</h3></div>
+                        <form onsubmit="dispensePrescription(event)" class="fade-in">
+                            <div class="form-group"><label>Patient Name</label><input type="text" id="disp-patient" required /></div>
+                            <div class="form-group"><label>Medicine</label><input type="text" id="disp-medicine" required /></div>
+                            <div class="form-group"><label>Quantity</label><input type="number" id="disp-quantity" required /></div>
+                            <button type="submit" class="btn btn-primary">Dispense</button>
+                        </form>
+                    </div>
+                `;
+            }
+            return '<div class="card"><p class="text-muted">Access denied.</p></div>';
+        }
+
+        function writePrescription(e) {
+            e.preventDefault();
+            showToast('Prescription issued. Pharmacist notified.', 'success');
+            navigateTo('prescriptions');
+        }
+
+        function dispensePrescription(e) {
+            e.preventDefault();
+            const medName = document.getElementById('disp-medicine').value.trim();
+            const qty = parseInt(document.getElementById('disp-quantity').value);
+            let meds = DB.getMedications();
+            const med = meds.find(m => m.name.toLowerCase() === medName.toLowerCase());
+            if (!med) {
+                showToast('Medicine not found in inventory.', 'error');
+                return;
+            }
+            if (med.stock < qty) {
+                showToast(`Insufficient stock. Only ${med.stock} available.`, 'error');
+                return;
+            }
+            meds = meds.map(m => m.id === med.id ? { ...m, stock: m.stock - qty } : m);
+            DB.setMedications(meds);
+            showToast(`Dispensed ${qty} of ${medName}.`, 'success');
+            navigateTo('prescriptions');
+        }
+
+        // ----- QUEUE (Receptionist) -----
+        function renderQueue() {
+            const appts = DB.getAppointments().filter(a => a.status === 'Scheduled' || a.status === 'In Progress');
+            return `
+                <div class="card">
+                    <div class="card-header"><h3>Patient Queue</h3></div>
+                    <div class="table-responsive">
+                        <table>
+                            <tr><th>#</th><th>Patient</th><th>Doctor</th><th>Time</th><th>Status</th><th>Action</th></tr>
+                            ${appts.sort((a,b) => a.time.localeCompare(b.time)).map((a,i) => `
+                                <tr>
+                                    <td>${i+1}</td>
+                                    <td>${a.patientName}</td>
+                                    <td>${a.doctor}</td>
+                                    <td>${a.time}</td>
+                                    <td><span class="status-badge ${a.status.toLowerCase()}">${a.status}</span></td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm" onclick="updateApptStatus(${a.id}, 'In Progress')">Start</button>
+                                        <button class="btn btn-primary btn-sm" onclick="updateApptStatus(${a.id}, 'Completed')">Complete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ----- VITALS (Nurse) -----
+        function renderVitals() {
+            const patients = DB.getPatients();
+            return `
+                <div class="card">
+                    <div class="card-header"><h3>Record Vital Signs</h3></div>
+                    <form onsubmit="recordVitals(event)" class="fade-in">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Patient</label>
+                                <select id="vital-patient" required>
+                                    ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Blood Pressure</label><input type="text" id="vital-bp" placeholder="120/80" required /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Heart Rate (bpm)</label><input type="number" id="vital-hr" required /></div>
+                            <div class="form-group"><label>Temperature (°C)</label><input type="number" step="0.1" id="vital-temp" required /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Oxygen Saturation (%)</label><input type="number" id="vital-o2" required /></div>
+                            <div class="form-group"><label>Weight (kg)</label><input type="number" step="0.1" id="vital-weight" required /></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Record Vitals</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function recordVitals(e) {
+            e.preventDefault();
+            showToast('Vital signs recorded successfully.', 'success');
+            navigateTo('vitals');
+        }
+
+        // ----- NURSING NOTES -----
+        function renderNursingNotes() {
+            const patients = DB.getPatients();
+            return `
+                <div class="card">
+                    <div class="card-header"><h3>Nursing Notes</h3></div>
+                    <form onsubmit="addNursingNote(event)" class="fade-in">
+                        <div class="form-group">
+                            <label>Patient</label>
+                            <select id="note-patient" required>
+                                ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Note</label>
+                            <textarea id="note-content" placeholder="Enter nursing observations..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Note</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function addNursingNote(e) {
+            e.preventDefault();
+            showToast('Nursing note added.', 'success');
+            navigateTo('nursing-notes');
+        }
+
+        // =====================================================================
+        //  INITIALIZATION
+        // =====================================================================
+        console.log('Kuac-jok HMS v3.0 loaded.');
+        console.log('Demo accounts: admin/admin123, doctor/doctor123, reception/reception123');
+    </script>
+</body>
+</html>
