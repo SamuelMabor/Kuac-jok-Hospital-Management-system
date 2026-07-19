@@ -1368,7 +1368,7 @@
                     { label: 'Patients', value: patients.length, sub: 'Total registered' },
                     { label: 'Appointments', value: appts.length, sub: 'Today: ' + appts.filter(a => a.date === new Date()
                             .toISOString().slice(0, 10)).length },
-                    { label: 'Revenue', value: `KSh ${totalRevenue.toLocaleString()}`, sub: 'Total paid' }
+                    { label: 'Revenue', value: `SSP ${totalRevenue.toLocaleString()}`, sub: 'Total paid' }
                 ];
                 content = `
                     <div class="card">
@@ -1435,7 +1435,7 @@
                 stats = [
                     { label: 'Total Medicines', value: meds.length },
                     { label: 'Low Stock Alert', value: lowStock.length },
-                    { label: 'Total Stock Value', value: `KSh ${meds.reduce((s,m) => s + (m.stock * m.price), 0).toLocaleString()}` }
+                    { label: 'Total Stock Value', value: `SSP ${meds.reduce((s,m) => s + (m.stock * m.price), 0).toLocaleString()}` }
                 ];
                 content = `
                     <div class="card">
@@ -1450,9 +1450,9 @@
                 const totalBills = bills.reduce((s, b) => s + b.amount, 0);
                 const totalPaid = bills.reduce((s, b) => s + b.paid, 0);
                 stats = [
-                    { label: 'Total Bills', value: `KSh ${totalBills.toLocaleString()}` },
-                    { label: 'Collected', value: `KSh ${totalPaid.toLocaleString()}` },
-                    { label: 'Outstanding', value: `KSh ${(totalBills - totalPaid).toLocaleString()}` },
+                    { label: 'Total Bills', value: `SSP ${totalBills.toLocaleString()}` },
+                    { label: 'Collected', value: `SSP ${totalPaid.toLocaleString()}` },
+                    { label: 'Outstanding', value: `SSP ${(totalBills - totalPaid).toLocaleString()}` },
                     { label: 'Invoices', value: bills.length }
                 ];
             } else {
@@ -1817,7 +1817,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group"><label>Stock</label><input type="number" id="med-stock" required /></div>
-                                <div class="form-group"><label>Price (KSh)</label><input type="number" id="med-price" required /></div>
+                                <div class="form-group"><label>Price (SSP)</label><input type="number" id="med-price" required /></div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group"><label>Expiry Date</label><input type="date" id="med-expiry" required /></div>
@@ -1838,7 +1838,7 @@
                     </div>
                     <div class="table-responsive">
                         <table>
-                            <tr><th>Name</th><th>Category</th><th>Stock</th><th>Price (KSh)</th><th>Expiry</th><th>Supplier</th>${canManage ? '<th>Action</th>' : ''}</tr>
+                            <tr><th>Name</th><th>Category</th><th>Stock</th><th>Price (SSP)</th><th>Expiry</th><th>Supplier</th>${canManage ? '<th>Action</th>' : ''}</tr>
                             ${meds.map(m => `
                                 <tr>
                                     <td><strong>${m.name}</strong></td>
@@ -2024,7 +2024,7 @@
                                         ${patients.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
                                     </select>
                                 </div>
-                                <div class="form-group"><label>Amount (KSh)</label><input type="number" id="bill-amount" required /></div>
+                                <div class="form-group"><label>Amount (SSP)</label><input type="number" id="bill-amount" required /></div>
                             </div>
                             <div class="form-group"><label>Items / Description</label><input type="text" id="bill-items" placeholder="e.g. Consultation, Lab" required /></div>
                             <div class="form-row">
@@ -2042,9 +2042,9 @@
 
             return `
                 <div class="stats-grid">
-                    <div class="stat-card green"><div class="label">Total Invoices</div><div class="value">KSh ${totalBills.toLocaleString()}</div></div>
-                    <div class="stat-card blue"><div class="label">Collected</div><div class="value">KSh ${totalPaid.toLocaleString()}</div></div>
-                    <div class="stat-card red"><div class="label">Outstanding</div><div class="value">KSh ${(totalBills - totalPaid).toLocaleString()}</div></div>
+                    <div class="stat-card green"><div class="label">Total Invoices</div><div class="value">SSP ${totalBills.toLocaleString()}</div></div>
+                    <div class="stat-card blue"><div class="label">Collected</div><div class="value">SSP ${totalPaid.toLocaleString()}</div></div>
+                    <div class="stat-card red"><div class="label">Outstanding</div><div class="value">SSP ${(totalBills - totalPaid).toLocaleString()}</div></div>
                     <div class="stat-card yellow"><div class="label">Invoices</div><div class="value">${bills.length}</div></div>
                 </div>
                 ${createForm}
@@ -2057,9 +2057,9 @@
                                 <tr>
                                     <td>#${b.id}</td>
                                     <td>${b.patientName}</td>
-                                    <td>KSh ${b.amount}</td>
-                                    <td>KSh ${b.paid}</td>
-                                    <td>KSh ${b.amount - b.paid}</td>
+                                    <td>SSP ${b.amount}</td>
+                                    <td>SSP ${b.paid}</td>
+                                    <td>SSP ${b.amount - b.paid}</td>
                                     <td><span class="status-badge ${b.status.toLowerCase()}">${b.status}</span></td>
                                     <td>${b.date}</td>
                                 </tr>
@@ -2114,8 +2114,8 @@
                 <div class="stats-grid">
                     <div class="stat-card green"><div class="label">Total Patients</div><div class="value">${patients.length}</div></div>
                     <div class="stat-card blue"><div class="label">Appointments</div><div class="value">${appts.length}</div></div>
-                    <div class="stat-card green"><div class="label">Revenue</div><div class="value">KSh ${totalRevenue.toLocaleString()}</div></div>
-                    <div class="stat-card yellow"><div class="label">Outstanding</div><div class="value">KSh ${(totalBills - totalRevenue).toLocaleString()}</div></div>
+                    <div class="stat-card green"><div class="label">Revenue</div><div class="value">SSP ${totalRevenue.toLocaleString()}</div></div>
+                    <div class="stat-card yellow"><div class="label">Outstanding</div><div class="value">SSP ${(totalBills - totalRevenue).toLocaleString()}</div></div>
                     <div class="stat-card blue"><div class="label">Medicines</div><div class="value">${meds.length}</div></div>
                     <div class="stat-card green"><div class="label">Lab Tests</div><div class="value">${tests.length}</div></div>
                 </div>
